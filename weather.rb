@@ -1,8 +1,10 @@
 require 'httparty'
 require_relative 'cache'
 require 'json'
+require_relative 'file_system_cache'
 
 @cache = Cache.new
+@file_cache = FileSystemCache.new
 
 city_state = ARGV
 
@@ -15,7 +17,7 @@ def get_json(url)
   return data
 end
 
-data = get_json("http://api.wunderground.com/api/7d88bd8046a20136/conditions/alerts/astronomy/forecast10day/q/#{city_state[1]}/#{city_state[0]}.json")
+data = get_json("http://api.wunderground.com/api/7d88bd8046a20136/conditions/alerts/astronomy/forecast10day/currenthurricane/q/#{city_state[1]}/#{city_state[0]}.json")
 
 if data['alerts'] == []
   data['alerts'] = 0
@@ -32,3 +34,5 @@ puts data['forecast']['txt_forecast']['forecastday'][2]['title'] + ": " + data['
 puts data['forecast']['txt_forecast']['forecastday'][4]['title'] + ": " + data['forecast']['txt_forecast']['forecastday'][4]['fcttext']
 puts data['forecast']['txt_forecast']['forecastday'][6]['title'] + ": " + data['forecast']['txt_forecast']['forecastday'][6]['fcttext']
 puts data['forecast']['txt_forecast']['forecastday'][8]['title'] + ": " + data['forecast']['txt_forecast']['forecastday'][8]['fcttext']
+puts "Current Hurricanes:"
+puts data['currenthurricane'][0]['stormInfo']['stormName'] + " is a category " + "#{data['currenthurricane'][0]['Current']['SaffirSimpsonCategory']}"
