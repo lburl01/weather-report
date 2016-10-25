@@ -1,10 +1,6 @@
 require 'httparty'
-require_relative 'cache'
 require 'json'
-require_relative 'file_system_cache'
 require 'pry'
-
-@cache = Cache.new
 
 city_state = ARGV
 
