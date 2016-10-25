@@ -5,31 +5,28 @@ require_relative 'file_system_cache'
 require 'pry'
 
 @cache = Cache.new
-@file_cache = FileSystemCache.new
-
-unless File.file?("memory.json")
-  @json_file = File.new("memory.json", "w+")
-end
 
 city_state = ARGV
 
 def get_json(url)
-  file = File.read("memory.json")
-  parsed_file = JSON.parse(file)
-  if parsed_file.key?(url)
-    # binding.pry
-    file_data = parsed_file[url]
-  else
-    data = HTTParty.get(url)
-    data_body = data.body
-    parsed_data = data.parsed_response
+  parsed_file = {}
 
-    json_obj = {url => data_body}.to_json
-
-    File.open("memory.json", 'w+') { |file| file.write(json_obj) }
-
-    return parsed_data
+  if File.exists?("memory.json")
+    parsed_file = JSON.parse(File.read("memory.json"))
+    if parsed_file.key?(url)
+      file_data = parsed_file[url]
+      puts "found file"
+      return file_data
+    end
   end
+  puts "out of if"
+  data = HTTParty.get(url).parsed_response
+
+  parsed_file[url] = data
+  File.write('memory.json', JSON.dump(parsed_file))
+
+  return data
+
 end
 
 data = get_json("http://api.wunderground.com/api/7d88bd8046a20136/conditions/alerts/astronomy/forecast10day/currenthurricane/q/#{city_state[1]}/#{city_state[0]}.json")
