@@ -1,6 +1,6 @@
-class FileSystemfile_cache
+class FileSystemCache
 
-  attr_reader :file_file_cache
+  attr_reader :file_cache
 
   def initialize(file_cache={})
     @file_cache = file_cache
